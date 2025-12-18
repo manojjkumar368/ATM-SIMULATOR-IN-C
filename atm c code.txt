@@ -1,0 +1,121 @@
+#include <stdio.h>
+
+/* Function declarations */
+void checkBalance(float balance);
+float depositMoney(float balance);
+float withdrawMoney(float balance);
+int authenticateUser();
+
+int main() 
+{
+    float balance = 1000.0;
+    int choice;
+
+    /* Authenticate user */
+    if (!authenticateUser()) {
+        printf("\nToo many failed attempts. Exiting ATM.\n");
+        return 1;
+    }
+
+    printf("\nWelcome to the ATM Simulator!\n");
+
+    do {
+        printf("\n======= ATM Menu =======\n");
+        printf("1. Check Balance\n");
+        printf("2. Deposit Money\n");
+        printf("3. Withdraw Money\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                checkBalance(balance);
+                break;
+
+            case 2:
+                balance = depositMoney(balance);
+                break;
+
+            case 3:
+                balance = withdrawMoney(balance);
+                break;
+
+            case 4:
+                printf("\nThank you for using the ATM. Goodbye!\n");
+                break;
+
+            default:
+                printf("\nInvalid choice! Please select a valid option.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+
+/* PIN authentication function */
+int authenticateUser() 
+{
+    int correctPIN = 1234;
+    int userPIN;
+    int attempts = 0;
+    int maxAttempts = 3;
+
+    printf("\nEnter your 4-digit PIN: ");
+
+    while (attempts < maxAttempts) {
+        scanf("%d", &userPIN);
+
+        if (userPIN == correctPIN) {
+            printf("\nPIN authentication successful!\n");
+            return 1;
+        } else {
+            attempts++;
+            if (attempts < maxAttempts) {
+                printf("Incorrect PIN! Try again (%d attempts left): ",
+                       maxAttempts - attempts);
+            }
+        }
+    }
+    return 0;
+}
+
+/* Check balance */
+void checkBalance(float balance) 
+{
+    printf("\nYour current balance is: $%.2f\n", balance);
+}
+
+/* Deposit money */
+float depositMoney(float balance) 
+{
+    float amount;
+    printf("\nEnter the amount to deposit: $");
+    scanf("%f", &amount);
+
+    if (amount > 0) {
+        balance += amount;
+        printf("Deposit successful! New balance: $%.2f\n", balance);
+    } else {
+        printf("Invalid amount! Deposit failed.\n");
+    }
+    return balance;
+}
+
+/* Withdraw money */
+float withdrawMoney(float balance) 
+{
+    float amount;
+    printf("\nEnter the amount to withdraw: $");
+    scanf("%f", &amount);
+
+    if (amount > 0 && amount <= balance) {
+        balance -= amount;
+        printf("Withdrawal successful! Remaining balance: $%.2f\n", balance);
+    } else if (amount > balance) {
+        printf("Insufficient balance! Withdrawal failed.\n");
+    } else {
+        printf("Invalid amount! Withdrawal failed.\n");
+    }
+    return balance;
+}
